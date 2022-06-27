@@ -1,0 +1,23 @@
+user->browser: Enters text into browser input field, clicks submit/save
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over server:
+server responds with a 302 code, 
+which tells the browser to 
+perform a new get of the address
+in the address bar
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: content posted in the note field, along with other add-ons from JS script (i.e. date)
+
+note over browser:
+browser triggers code to render new notes, 
+and an updated note section is shown
+end note
