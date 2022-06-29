@@ -1,10 +1,17 @@
 import React from "react";
 
 const Total = ({ parts }) => {
+  const sumValues = () => {
+    let sum = parts.reduce(
+      (accumulator, current) => accumulator + current.exercises,
+      0
+    );
+    return sum;
+  };
+
   return (
     <p>
-      Number of exercises{" "}
-      {parts[0].exercises + parts[1].exercises + parts[2].exercises}
+      <b>Number of exercises {sumValues()}</b>
     </p>
   );
 };
