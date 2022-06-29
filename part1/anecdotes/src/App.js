@@ -31,13 +31,9 @@ const App = () => {
 
   const greatestVotes = () => {
     const highVote = Math.max(...voteCopy);
-    console.log(highVote);
     const location = voteCopy.indexOf(highVote);
     return location;
   };
-
-  console.log(votes);
-  console.log("selected", selected);
 
   return (
     <div>
