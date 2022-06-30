@@ -5,26 +5,15 @@ import Countries from "./components/Countries";
 import Country from "./components/Country";
 
 const App = () => {
-  const [countries, setCountry] = useState([]);
+  const [countries, setCountries] = useState([]);
   const [results, setResults] = useState([]);
 
   useEffect(() => {
     axios.get("https://restcountries.com/v3/all").then((res) => {
       console.log(res);
-      setCountry(res.data);
+      setCountries(res.data);
     });
   }, []);
-
-  // const searchResults = () => {
-  //   console.log(search);
-  //   if (search == "") {
-  //     return "";
-  //   } else {
-  //     return countries.filter((country) => {
-  //       return country.name.toLowerCase().includes(search.toLowerCase());
-  //     });
-  //   }
-  // };
 
   const searchHandler = (e) => {
     setResults(
@@ -40,7 +29,9 @@ const App = () => {
     if (results.length > 10) {
       return <p>Too many countries to show, please refine your search.</p>;
     } else if (results.length < 10 && results.length > 1) {
-      return <Countries searchResults={results} />;
+      return (
+        <Countries searchResults={results} searchHandler={searchHandler} />
+      );
     } else if (results.length === 1) {
       return <Country searchResults={results} />;
     } else if (results.length < 1) {
@@ -55,7 +46,7 @@ const App = () => {
   return (
     <div>
       <Search searchHandler={searchHandler} />
-      <div>{countrySwitch()}</div>
+      {countrySwitch(results)}
     </div>
   );
 };
