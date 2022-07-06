@@ -1,17 +1,7 @@
 import React from "react";
 import NumberServices from "../services/NumberServices";
 
-const Results = ({ searchResults }) => {
-  const deleteHandler = (name, id) => {
-    const popup = window.confirm(`Delete ${name}?`);
-    if (popup) {
-      NumberServices.deletePerson(id);
-      window.location.reload();
-    } else {
-      return;
-    }
-  };
-
+const Results = ({ searchResults, deleteHandler }) => {
   return (
     <div>
       <ul>

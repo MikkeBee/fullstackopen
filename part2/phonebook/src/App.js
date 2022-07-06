@@ -2,18 +2,30 @@ import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import Search from "./components/Search";
 import Results from "./components/Results";
+import GoodNotification from "./components/GoodNotification";
 import NumberServices from "./services/NumberServices";
+import "./index.css";
+import BadNotification from "./components/BadNotification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+  const [success, setSuccess] = useState("");
+  const [errorMessage, setError] = useState("");
 
   const getPersons = () => {
     NumberServices.getInfo().then((response) => {
       setPersons(response.data);
     });
+  };
+
+  const deleteHandler = (name, id) => {
+    const popup = window.confirm(`Delete ${name}?`);
+    if (popup) {
+      NumberServices.deletePerson(id);
+    }
   };
 
   useEffect(() => {
@@ -37,14 +49,35 @@ const App = () => {
   const updater = (id) => {
     const person = persons.find((n) => n.id === id);
     const updatedPerson = { ...person, number: newNumber };
-    NumberServices.updatePerson(id, updatedPerson).then(() => {
-      const newPersons = persons.map((person) =>
-        person.id === id ? updatedPerson : person
-      );
-      setPersons(newPersons);
-      setNewName("");
-      setNewNumber("");
-    });
+    NumberServices.updatePerson(id, updatedPerson)
+      .then(() => {
+        const newPersons = persons.map((person) =>
+          person.id === id ? updatedPerson : person
+        );
+        setPersons(newPersons);
+        setNewName("");
+        setNewNumber("");
+        const updateSuccessTimer = () => {
+          setSuccess(`${updatedPerson.name}'s number was updated.`);
+          setTimeout(() => {
+            setSuccess("");
+          }, 4000);
+        };
+        updateSuccessTimer();
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          const updateErrorTimer = () => {
+            setError(
+              `${updatedPerson.name} has already been removed from the phonebook`
+            );
+            setTimeout(() => {
+              setError("");
+            }, 4000);
+          };
+          updateErrorTimer();
+        }
+      });
   };
 
   const addPerson = (event) => {
@@ -74,6 +107,14 @@ const App = () => {
     } else {
       NumberServices.createPerson(peep).then((response) => {
         setPersons(persons.concat(response.data));
+        const updateSuccessTimer = () => {
+          setSuccess(`${peep.name} was added to the phonebook`);
+          setTimeout(() => {
+            setSuccess("");
+          }, 4000);
+        };
+        updateSuccessTimer();
+
         setNewName("");
         setNewNumber("");
       });
@@ -91,6 +132,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <GoodNotification message={success} />
+      <BadNotification message={errorMessage} />
       <Search searchHandler={searchHandler} />
       <Form
         addPerson={addPerson}
@@ -100,7 +143,7 @@ const App = () => {
         numberHandler={numberHandler}
       />
       <h2>Numbers</h2>
-      <Results searchResults={searchResults} />
+      <Results searchResults={searchResults} deleteHandler={deleteHandler} />
     </div>
   );
 };
