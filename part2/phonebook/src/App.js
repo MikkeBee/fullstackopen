@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Form from "./components/Form";
 import Search from "./components/Search";
 import Results from "./components/Results";
+import NumberServices from "./services/NumberServices";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,10 +10,14 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+  const getPersons = () => {
+    NumberServices.getInfo().then((response) => {
       setPersons(response.data);
     });
+  };
+
+  useEffect(() => {
+    getPersons();
   }, []);
 
   const searchHandler = (e) => {
@@ -30,11 +34,25 @@ const App = () => {
     }
   };
 
+  const updater = (id) => {
+    const person = persons.find((n) => n.id === id);
+    const updatedPerson = { ...person, number: newNumber };
+    NumberServices.updatePerson(id, updatedPerson).then(() => {
+      const newPersons = persons.map((person) =>
+        person.id === id ? updatedPerson : person
+      );
+      setPersons(newPersons);
+      setNewName("");
+      setNewNumber("");
+    });
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
     const peep = {
       name: newName,
       number: newNumber,
+      id: persons.length + 1,
     };
 
     const personExists = persons.find((element) => element.name === newName)
@@ -42,13 +60,23 @@ const App = () => {
       : false;
 
     if (personExists) {
-      window.alert(`${newName} is already in the phonebook`);
-      setNewName("");
-      setNewNumber("");
+      const person = persons.find((element) => element.name === newName);
+      if (
+        window.confirm(
+          `${newName} is already in the phonebook. Would you like to replace the old number with a new one?`
+        )
+      ) {
+        updater(person.id);
+      } else {
+        setNewName("");
+        setNewNumber("");
+      }
     } else {
-      setPersons(persons.concat(peep));
-      setNewName("");
-      setNewNumber("");
+      NumberServices.createPerson(peep).then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewNumber("");
+      });
     }
   };
 
