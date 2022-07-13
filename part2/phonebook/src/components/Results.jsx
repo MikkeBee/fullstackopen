@@ -1,5 +1,4 @@
 import React from "react";
-import NumberServices from "../services/NumberServices";
 
 const Results = ({ searchResults, deleteHandler }) => {
   return (

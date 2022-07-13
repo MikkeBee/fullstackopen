@@ -37,7 +37,7 @@ const App = () => {
   };
 
   const searchResults = () => {
-    if (search == "") {
+    if (search === "") {
       return persons;
     } else {
       return persons.filter((person) => {
