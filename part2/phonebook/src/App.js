@@ -25,6 +25,7 @@ const App = () => {
     const popup = window.confirm(`Delete ${name}?`);
     if (popup) {
       NumberServices.deletePerson(id);
+      window.location.reload();
     }
   };
 
@@ -85,7 +86,6 @@ const App = () => {
     const peep = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
 
     const personExists = persons.find((element) => element.name === newName)

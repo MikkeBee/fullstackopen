@@ -6,6 +6,7 @@ const getInfo = () => {
 };
 
 const createPerson = (peep) => {
+  console.log(peep);
   return axios.post(baseURL, peep);
 };
 
