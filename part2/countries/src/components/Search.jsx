@@ -3,7 +3,7 @@ import React from "react";
 const Search = ({ searchHandler }) => {
   return (
     <div>
-      Filter entries <input onChange={searchHandler} />
+      Find countries <input onChange={searchHandler} />
     </div>
   );
 };

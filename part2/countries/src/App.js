@@ -12,6 +12,7 @@ const App = () => {
     axios.get("https://restcountries.com/v3/all").then((res) => {
       console.log(res);
       setCountries(res.data);
+      console.log(countries);
     });
   }, []);
 

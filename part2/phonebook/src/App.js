@@ -105,19 +105,24 @@ const App = () => {
         setNewNumber("");
       }
     } else {
-      NumberServices.createPerson(peep).then((response) => {
-        setPersons(persons.concat(response.data));
-        const updateSuccessTimer = () => {
-          setSuccess(`${peep.name} was added to the phonebook`);
-          setTimeout(() => {
-            setSuccess("");
-          }, 4000);
-        };
-        updateSuccessTimer();
+      NumberServices.createPerson(peep)
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          const updateSuccessTimer = () => {
+            setSuccess(`${peep.name} was added to the phonebook`);
+            setTimeout(() => {
+              setSuccess("");
+            }, 4000);
+          };
+          updateSuccessTimer();
 
-        setNewName("");
-        setNewNumber("");
-      });
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(error.response.data.error);
+        });
     }
   };
 
